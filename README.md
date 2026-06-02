@@ -1,34 +1,32 @@
-# Single-Cell Transcriptomic Profiling of Tissue-Specific Senescence
+# Tissue-Specific Senescence: Single-Cell Transcriptomic Pipeline
 
 **Author:** Jungjin Kim  
 **Institution:** Denison University  
 
-## Overview
-This repository contains an independent "dry lab" computational biology pipeline designed to isolate and identify the molecular signatures of aging in specific murine tissues. 
+This is a dry-lab computational biology pipeline built to isolate and map the molecular signatures of aging in specific mouse tissues. The core focus is processing raw single-cell RNA sequencing (scRNA-seq) data to pinpoint novel transcriptional targets linked to the **Senescence-Associated Secretory Phenotype (SASP)**—ultimately flagging data-driven candidates for CRISPRi or senolytic therapeutic research.
 
-The primary objective of this project is to process raw single-cell RNA sequencing (scRNA-seq) data to identify novel transcriptional targets associated with the **Senescence-Associated Secretory Phenotype (SASP)**, providing data-driven candidates for potential CRISPR interference (CRISPRi) or senolytic therapies.
-
-## Datasets
+## The Data
 * **Source:** Tabula Muris Senis (The Murine Single-Cell Aging Atlas)
-* **Tissue Analyzed:** Bladder (Urothelial Cells)
+* **Tissue Focus:** Bladder (Urothelial Cells)
 * **Cohorts:** 3-month (Young) vs. 24-month (Old)
 
-## Methodology & Computational Pipeline
-The analysis is executed in Python using a custom bioinformatics workflow:
-1. **Data Ingestion & QC:** Raw `.h5ad` matrices are loaded and filtered.
-2. **Dimensionality Reduction:** Data is normalized (`target_sum=1e4`), log-transformed, and visualized using UMAP to track the physical divergence of cellular transcriptomes across lifespans.
-3. **Differential Gene Expression (DGE):** Wilcoxon rank-sum testing isolates statistically significant upregulated genes driving the aging phenotype.
-4. **Pathway Enrichment Analysis:** The `gseapy` library cross-references DGE outputs with the Gene Ontology (GO) Biological Process database to map systemic cellular breakdown.
+## Pipeline Architecture
+I structured the analysis as a modular Python workflow rather than relying on black-box tools, ensuring full control over the filtering and normalization steps:
 
-## Key Findings (Bladder Urothelial Aging)
-The pipeline successfully isolated known master-regulators of cellular senescence from the raw transcriptomic data, with high statistical significance:
-* **AP-1 Complex Activation:** Dramatic upregulation of `Jund` ($p < 10^{-98}$), a primary transcription factor responsible for driving SASP inflammatory cytokine production (e.g., IL-6).
-* **LncRNA Dysregulation:** Significant spikes in `Malat1`, an RNA scaffold associated with oxidative stress and senescence.
-* **Ribosomal Hyperactivation:** Pathway enrichment confirmed a massive upregulation in **Ribosomal Small Subunit Biogenesis** and **Cytoplasmic Translation**, perfectly mirroring the cellular hypertrophy and hyper-secretion characteristic of the SASP.
+1. **QC & Data Ingestion:** Loading raw `.h5ad` matrices, filtering out low-quality cells, and establishing baseline thresholds.
+2. **Normalization & Dimensionality Reduction:** Scaling count matrices (`target_sum=1e4`), log-transforming, and generating UMAP embeddings to track how cell transcriptomes physically diverge across the lifespan.
+3. **Differential Gene Expression (DGE):** Utilizing Wilcoxon rank-sum testing to pull out statistically significant genes driving the aging phenotype.
+4. **Pathway Enrichment Analysis:** Feeding DGE outputs into `gseapy` to cross-reference hits with the Gene Ontology (GO) Biological Process database, mapping out systemic cellular degradation.
+
+## Key Insights (Bladder Urothelial Aging)
+The pipeline successfully isolated several known master-regulators of cellular senescence directly from the raw transcriptomic data, validating the workflow's sensitivity:
+
+* **AP-1 Complex Activation:** Observed a sharp upregulation of `Jund` (p < 1e-98), a major transcription factor responsible for driving inflammatory SASP cytokines like IL-6.
+* **LncRNA Dysregulation:** Caught significant spikes in `Malat1` within the old cohort, linking the dataset directly to oxidative stress and structural aging pathways.
+* **Ribosomal Hyperactivation:** Pathway enrichment flagged a massive increase in **Ribosomal Small Subunit Biogenesis** and **Cytoplasmic Translation**. This perfectly captures the cellular hypertrophy and hyper-secretion that defines the SASP profile.
 
 ## Tech Stack
-* `Python 3.10`
-* `Scanpy` (Single-cell processing toolkit)
-* `AnnData` (Genomic data structures)
-* `GSEApy` (Pathway enrichment)
-* `Pandas` & `Matplotlib`
+* **Language:** Python 3.10
+* **Core Single-Cell Analysis:** `Scanpy`, `AnnData`
+* **Functional Annotation:** `GSEApy`
+* **Data & Plotting:** `Pandas`, `Matplotlib`
